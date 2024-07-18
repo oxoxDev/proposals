@@ -74,9 +74,15 @@ contract Test_P001 is Test {
         config.setDebtCeiling(weETH, 1);
         config.setBorrowableInIsolation(weth, false);
 
+        uint256 debtBefore = _getIsolationModeTotalDebt(weETH);
+        assertEq(debtBefore, 142661738);
+
         // try to repay isolated debt
         vm.prank(weETHborrower);
         gateway.repayETH{value: 2 ether}(address(pool), 2 ether, 2, weETHborrower);
+
+        uint256 debtAfter = _getIsolationModeTotalDebt(weETH);
+        assertEq(debtAfter, 142661538);
     }
 
     function test__P001__canBorrowAnotherIsolatedDebtAsset() external {
@@ -109,10 +115,8 @@ contract Test_P001 is Test {
     function _getIsolationModeAsset(address who) internal view returns (address assetAddress, uint256 ceiling) {
         DataTypes.UserConfigurationMap memory self = pool.getUserConfiguration(who);
         uint256 id = _getFirstAssetIdByMask(self, COLLATERAL_MASK);
-
         assetAddress = pool.getReservesList()[id];
-        DataTypes.ReserveData memory d = pool.getReserveData(assetAddress);
-        ceiling = _getDebtCeiling(d.configuration);
+        ceiling = _getDebtCeiling(assetAddress);
     }
 
     function _getFirstAssetIdByMask(DataTypes.UserConfigurationMap memory self, uint256 mask)
@@ -131,7 +135,13 @@ contract Test_P001 is Test {
         }
     }
 
-    function _getDebtCeiling(DataTypes.ReserveConfigurationMap memory self) internal pure returns (uint256) {
-        return (self.data & ~DEBT_CEILING_MASK) >> DEBT_CEILING_START_BIT_POSITION;
+    function _getDebtCeiling(address assetAddress) internal view returns (uint256) {
+        DataTypes.ReserveData memory d = pool.getReserveData(assetAddress);
+        return (d.configuration.data & ~DEBT_CEILING_MASK) >> DEBT_CEILING_START_BIT_POSITION;
+    }
+
+    function _getIsolationModeTotalDebt(address assetAddress) internal view returns (uint256) {
+        DataTypes.ReserveData memory d = pool.getReserveData(assetAddress);
+        return d.isolationModeTotalDebt;
     }
 }
