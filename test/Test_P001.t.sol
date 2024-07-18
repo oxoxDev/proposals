@@ -29,6 +29,8 @@ contract Test_P001 is Test {
     // safe that has access to the acl manager (eventually this should go into a timelock)
     address admin = address(0x14aAD4668de2115e30A5FeeE42CFa436899CCD8A);
 
+    address weETHborrower = address(0x5eFb1c0ba60Ee295056c6EE112491584C31d2A33);
+
     function setUp() external {
         lineaFork = vm.createFork(vm.envString("LINEA_RPC_URL"));
         vm.selectFork(lineaFork);

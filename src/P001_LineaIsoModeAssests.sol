@@ -91,10 +91,10 @@ contract P001_LineaIsoModeAssests {
         config.setReserveFlashLoaning(grai, false);
 
         // todo need to write tests for this; remove these assets from debt ceiling later
-        // // remove from isolation mode
-        // config.setDebtCeiling(ezETH, 0);
-        // config.setDebtCeiling(weETH, 0);
-        // config.setDebtCeiling(wrsETH, 0);
+        // remove from isolation mode
+        config.setDebtCeiling(ezETH, 0);
+        config.setDebtCeiling(weETH, 0);
+        config.setDebtCeiling(wrsETH, 0);
 
         IRevokeRole(address(acl)).renounceRole(
             acl.POOL_ADMIN_ROLE(),
