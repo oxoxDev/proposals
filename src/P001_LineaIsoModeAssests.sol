@@ -13,26 +13,50 @@ pragma solidity 0.8.19;
 // Twitter: https://twitter.com/zerolendxyz
 // Telegram: https://t.me/zerolendxyz
 
-import {IPoolConfigurator} from "@zerolendxyz/core-v3/contracts/interfaces/IPoolConfigurator.sol";
-import {IACLManager} from "@zerolendxyz/core-v3/contracts/interfaces/IACLManager.sol";
+import {IPoolConfigurator} from "../lib/core-contracts/contracts/interfaces/IPoolConfigurator.sol";
+import {IACLManager} from "../lib/core-contracts/contracts/interfaces/IACLManager.sol";
+
+interface IRevokeRole {
+    function renounceRole(bytes32 role, address account) external;
+}
 
 contract P001_LineaIsoModeAssests {
-    uint256 public number;
-
     address public mai;
     address public wstETH;
     address public grai;
     address public weth;
-
+    address public ezETH;
     IPoolConfigurator public config;
     IACLManager public acl;
 
-    function execute() public {
-        config.setBorrowableInIsolation(mai, true);
-        config.setBorrowableInIsolation(wstETH, true);
-        config.setBorrowableInIsolation(grai, true);
-        config.setBorrowableInIsolation(weth, true);
+    constructor(
+        address _mai,
+        address _wstETH,
+        address _grai,
+        address _ezETH,
+        address _weth,
+        address _config,
+        address _acl
+    ) {
+        mai = _mai;
+        wstETH = _wstETH;
+        grai = _grai;
+        weth = _weth;
+        ezETH = _ezETH;
+        config = IPoolConfigurator(_config);
+        acl = IACLManager(_acl);
+    }
 
-        acl.removePoolAdmin(address(this));
+    function execute() public {
+        config.setBorrowableInIsolation(mai, false);
+        config.setBorrowableInIsolation(wstETH, false);
+        config.setBorrowableInIsolation(grai, false);
+        config.setBorrowableInIsolation(ezETH, false);
+        config.setBorrowableInIsolation(weth, false);
+
+        IRevokeRole(address(acl)).renounceRole(
+            acl.POOL_ADMIN_ROLE(),
+            address(this)
+        );
     }
 }
