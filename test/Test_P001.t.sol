@@ -146,7 +146,6 @@ contract Test_P001 is Test {
             uint256 bitmapData = self.data & mask;
             uint256 firstAssetPosition = bitmapData & ~(bitmapData - 1);
             uint256 id;
-
             while ((firstAssetPosition >>= 2) != 0) {
                 id += 1;
             }
