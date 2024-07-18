@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import {Test, console} from "../lib/forge-std/src/Test.sol";
 import {P001_LineaIsoModeAssests, IPoolConfigurator, IACLManager} from "../src/P001_LineaIsoModeAssests.sol";
 
-contract P001_LineaIsoModeAssestsTest is Test {
+contract Test_P001 is Test {
     P001_LineaIsoModeAssests public payload;
     uint256 lineaFork;
 
