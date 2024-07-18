@@ -13,6 +13,8 @@ pragma solidity 0.8.19;
 // Twitter: https://twitter.com/zerolendxyz
 // Telegram: https://t.me/zerolendxyz
 
+// visit https://github.com/zerolend/proposals for information about tests and deployment scripts
+
 import {IPoolAddressesProvider} from "../lib/core-contracts/contracts/interfaces/IPoolAddressesProvider.sol";
 import {IPoolConfigurator} from "../lib/core-contracts/contracts/interfaces/IPoolConfigurator.sol";
 import {IACLManager} from "../lib/core-contracts/contracts/interfaces/IACLManager.sol";
@@ -88,10 +90,11 @@ contract P001_LineaIsoModeAssests {
         config.setReserveFlashLoaning(mai, false);
         config.setReserveFlashLoaning(grai, false);
 
-        // remove from isolation mode
-        config.setDebtCeiling(ezETH, 0);
-        config.setDebtCeiling(weETH, 0);
-        config.setDebtCeiling(wrsETH, 0);
+        // todo need to write tests for this; remove these assets from debt ceiling later
+        // // remove from isolation mode
+        // config.setDebtCeiling(ezETH, 0);
+        // config.setDebtCeiling(weETH, 0);
+        // config.setDebtCeiling(wrsETH, 0);
 
         IRevokeRole(address(acl)).renounceRole(
             acl.POOL_ADMIN_ROLE(),
