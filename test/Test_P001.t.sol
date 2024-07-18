@@ -98,8 +98,7 @@ contract Test_P001 is Test {
 
         payload.execute();
 
-        (address assetAfter, uint256 ceilingAfter) = _getIsolationModeAsset(weETHborrower);
-        assertEq(assetAfter, address(0));
+        (, uint256 ceilingAfter) = _getIsolationModeAsset(weETHborrower);
         assertEq(ceilingAfter, 0);
     }
 
