@@ -4,3 +4,6 @@
 [submodule "lib/core-contracts"]
 	path = lib/core-contracts
 	url = https://github.com/zerolend/core-contracts
+[submodule "lib/periphery-contracts"]
+	path = lib/periphery-contracts
+	url = https://github.com/zerolend/periphery-contracts
