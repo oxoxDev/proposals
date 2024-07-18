@@ -70,7 +70,7 @@ contract Test_P001 is Test {
         gateway.repayETH{value: 1 ether}(address(pool), 1 ether, 2, weETHborrower);
     }
 
-    function test__P001__canRepayDisabledIsolatedDebtBeyondLimits_WEETH() external {
+    function test__P001__canRepayDisabledIsolatedDebtBeyondLimitsChangesDebt_WEETH() external {
         config.setDebtCeiling(weETH, 1);
         config.setBorrowableInIsolation(weth, false);
 
@@ -83,6 +83,26 @@ contract Test_P001 is Test {
 
         uint256 debtAfter = _getIsolationModeTotalDebt(weETH);
         assertEq(debtAfter, 142661538);
+    }
+
+    function test__P001__canRepayDisabledIsolatedDebtBeyondLimits_WEETH() external {
+        config.setDebtCeiling(weETH, 1);
+        config.setBorrowableInIsolation(weth, false);
+
+        uint256 debtBefore = _getIsolationModeTotalDebt(weETH);
+        assertEq(debtBefore, 142661738);
+
+        payload.execute();
+
+        uint256 debtBefore2 = _getIsolationModeTotalDebt(weETH);
+        assertEq(debtBefore2, 0);
+
+        // try to repay isolated debt
+        vm.prank(weETHborrower);
+        gateway.repayETH{value: 2 ether}(address(pool), 2 ether, 2, weETHborrower);
+
+        uint256 debtAfter = _getIsolationModeTotalDebt(weETH);
+        assertEq(debtAfter, 0);
     }
 
     function test__P001__canBorrowAnotherIsolatedDebtAsset() external {
