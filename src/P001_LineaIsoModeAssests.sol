@@ -25,50 +25,28 @@ interface IRevokeRole {
 }
 
 contract P001_LineaIsoModeAssests {
-    address public dai;
-    address public ezETH;
-    address public grai;
-    address public mai;
-    address public usde;
-    address public wbtc;
-    address public weETH;
-    address public weth;
-    address public wrsETH;
-    address public wstETH;
+    address public mai = address(0xf3B001D64C656e30a62fbaacA003B1336b4ce12A);
+    address public wstETH = address(0xB5beDd42000b71FddE22D3eE8a79Bd49A568fC8F);
+    address public grai = address(0x894134a25a5faC1c2C26F1d8fBf05111a3CB9487);
+    address public ezETH = address(0x2416092f143378750bb29b79eD961ab195CcEea5);
+    address public weth = address(0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f);
+
+    address public wbtc = address(0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4);
+    address public wrsETH = address(0xD2671165570f41BBB3B0097893300b6EB6101E6C);
+    address public weETH = address(0x1Bf74C010E6320bab11e2e5A532b5AC15e0b8aA6);
+    address public usde = address(0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34);
+    address public dai = address(0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5);
+
+    address public provider = address(0xC44827C51d00381ed4C52646aeAB45b455d200eB);
 
     IPoolConfigurator public config;
     IACLManager public acl;
     IPool public pool;
 
-    constructor(
-        address _mai,
-        address _wstETH,
-        address _grai,
-        address _ezETH,
-        address _weth,
-        address _wbtc,
-        address _wrsETH,
-        address _weETH,
-        address _usde,
-        address _dai,
-        address _provider
-    ) {
-        mai = _mai;
-        wstETH = _wstETH;
-        grai = _grai;
-        weth = _weth;
-        ezETH = _ezETH;
-        wbtc = _wbtc;
-        wrsETH = _wrsETH;
-        weETH = _weETH;
-        usde = _usde;
-        dai = _dai;
-
-        config = IPoolConfigurator(
-            IPoolAddressesProvider(_provider).getPoolConfigurator()
-        );
-        acl = IACLManager(IPoolAddressesProvider(_provider).getACLManager());
-        pool = IPool(IPoolAddressesProvider(_provider).getPool());
+    constructor() {
+        config = IPoolConfigurator(IPoolAddressesProvider(provider).getPoolConfigurator());
+        acl = IACLManager(IPoolAddressesProvider(provider).getACLManager());
+        pool = IPool(IPoolAddressesProvider(provider).getPool());
     }
 
     function execute() public {
@@ -96,9 +74,6 @@ contract P001_LineaIsoModeAssests {
         config.setDebtCeiling(weETH, 0);
         config.setDebtCeiling(wrsETH, 0);
 
-        IRevokeRole(address(acl)).renounceRole(
-            acl.POOL_ADMIN_ROLE(),
-            address(this)
-        );
+        IRevokeRole(address(acl)).renounceRole(acl.POOL_ADMIN_ROLE(), address(this));
     }
 }

@@ -28,17 +28,15 @@ contract Test_P001 is Test {
     IACLManager acl;
     IPool pool;
 
-    IWrappedTokenGatewayV3 gateway =
-        IWrappedTokenGatewayV3(0x5d50bE703836C330Fc2d147a631CDd7bb8D7171c);
+    IWrappedTokenGatewayV3 gateway = IWrappedTokenGatewayV3(0x5d50bE703836C330Fc2d147a631CDd7bb8D7171c);
 
     // safe that has access to the acl manager (eventually this should go into a timelock)
     address admin = address(0x14aAD4668de2115e30A5FeeE42CFa436899CCD8A);
 
     address weETHborrower = address(0x5eFb1c0ba60Ee295056c6EE112491584C31d2A33);
 
-    uint256 internal constant COLLATERAL_MASK =
-        0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA;
-    uint256 internal constant DEBT_CEILING_MASK =              0xF0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF; // prettier-ignore
+    uint256 internal constant COLLATERAL_MASK = 0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA;
+    uint256 internal constant DEBT_CEILING_MASK = 0xF0000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF; // prettier-ignore
     uint256 internal constant DEBT_CEILING_START_BIT_POSITION = 212;
 
     function setUp() external {
@@ -46,19 +44,7 @@ contract Test_P001 is Test {
         vm.selectFork(lineaFork);
         vm.rollFork(6_953_695);
 
-        payload = new P001_LineaIsoModeAssests(
-            mai,
-            wstETH,
-            grai,
-            ezETH,
-            weth,
-            wbtc,
-            wrsETH,
-            weETH,
-            usde,
-            dai,
-            address(provider)
-        );
+        payload = new P001_LineaIsoModeAssests();
 
         acl = payload.acl();
         pool = payload.pool();
@@ -81,28 +67,16 @@ contract Test_P001 is Test {
 
         // try to repay isolated debt
         vm.prank(weETHborrower);
-        gateway.repayETH{value: 1 ether}(
-            address(pool),
-            1 ether,
-            2,
-            weETHborrower
-        );
+        gateway.repayETH{value: 1 ether}(address(pool), 1 ether, 2, weETHborrower);
     }
 
-    function test__P001__canRepayDisabledIsolatedDebtBeyondLimits_WEETH()
-        external
-    {
+    function test__P001__canRepayDisabledIsolatedDebtBeyondLimits_WEETH() external {
         config.setDebtCeiling(weETH, 1);
         config.setBorrowableInIsolation(weth, false);
 
         // try to repay isolated debt
         vm.prank(weETHborrower);
-        gateway.repayETH{value: 2 ether}(
-            address(pool),
-            2 ether,
-            2,
-            weETHborrower
-        );
+        gateway.repayETH{value: 2 ether}(address(pool), 2 ether, 2, weETHborrower);
     }
 
     function test__P001__canBorrowAnotherIsolatedDebtAsset() external {
@@ -118,19 +92,23 @@ contract Test_P001 is Test {
     }
 
     function test__P001__canExitIsolationMode() external {
+        (address assetBefore, uint256 ceilingBefore) = _getIsolationModeAsset(weETHborrower);
+        assertEq(assetBefore, weETH);
+        assertEq(ceilingBefore, 500000000);
+
         payload.execute();
+
+        (address assetAfter, uint256 ceilingAfter) = _getIsolationModeAsset(weETHborrower);
+        assertEq(assetAfter, address(0));
+        assertEq(ceilingAfter, 0);
     }
 
     function test__P001__noOverflowsOrUnderflows() external {
         payload.execute();
     }
 
-    function _getIsolationModeAsset(
-        address who
-    ) internal view returns (address assetAddress, uint256 ceiling) {
-        DataTypes.UserConfigurationMap memory self = pool.getUserConfiguration(
-            who
-        );
+    function _getIsolationModeAsset(address who) internal view returns (address assetAddress, uint256 ceiling) {
+        DataTypes.UserConfigurationMap memory self = pool.getUserConfiguration(who);
         uint256 id = _getFirstAssetIdByMask(self, COLLATERAL_MASK);
 
         assetAddress = pool.getReservesList()[id];
@@ -138,10 +116,11 @@ contract Test_P001 is Test {
         ceiling = _getDebtCeiling(d.configuration);
     }
 
-    function _getFirstAssetIdByMask(
-        DataTypes.UserConfigurationMap memory self,
-        uint256 mask
-    ) internal pure returns (uint256) {
+    function _getFirstAssetIdByMask(DataTypes.UserConfigurationMap memory self, uint256 mask)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 bitmapData = self.data & mask;
             uint256 firstAssetPosition = bitmapData & ~(bitmapData - 1);
@@ -153,10 +132,7 @@ contract Test_P001 is Test {
         }
     }
 
-    function _getDebtCeiling(
-        DataTypes.ReserveConfigurationMap memory self
-    ) internal pure returns (uint256) {
-        return
-            (self.data & ~DEBT_CEILING_MASK) >> DEBT_CEILING_START_BIT_POSITION;
+    function _getDebtCeiling(DataTypes.ReserveConfigurationMap memory self) internal pure returns (uint256) {
+        return (self.data & ~DEBT_CEILING_MASK) >> DEBT_CEILING_START_BIT_POSITION;
     }
 }
