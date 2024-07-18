@@ -22,10 +22,13 @@ contract Deploy_P001 is Script {
     address public grai = address(0x894134a25a5faC1c2C26F1d8fBf05111a3CB9487);
     address public ezETH = address(0x2416092f143378750bb29b79eD961ab195CcEea5);
     address public weth = address(0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f);
-    IPoolConfigurator public config =
-        IPoolConfigurator(0xf17218B09699d0F7145e40E771e72130FF616498);
-    IACLManager public acl =
-        IACLManager(0xb2178109A414C3a869E5104283Fcf1a18923D0B8);
+    address public wbtc;
+    address public wrsETH;
+    address public weETH;
+    address public usde;
+    address public dai;
+
+    address public provider;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -37,8 +40,12 @@ contract Deploy_P001 is Script {
             grai,
             ezETH,
             weth,
-            address(config),
-            address(acl)
+            wbtc,
+            wrsETH,
+            weETH,
+            usde,
+            dai,
+            address(provider)
         );
 
         vm.stopBroadcast();
