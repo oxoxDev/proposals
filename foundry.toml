@@ -5,7 +5,7 @@ libs = [
     "lib/core-contracts",
     "lib/forge-std",
     "lib/periphery-contracts",
-    "lib/core-v3"
+    "lib/governance"    
 ]
 remappings = [
     "forge-std/=lib/forge-std/src/",

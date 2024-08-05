@@ -7,3 +7,6 @@
 [submodule "lib/periphery-contracts"]
 	path = lib/periphery-contracts
 	url = https://github.com/zerolend/periphery-contracts
+[submodule "lib/governance"]
+	path = lib/governance
+	url = https://github.com/zerolend/governance
