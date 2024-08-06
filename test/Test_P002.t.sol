@@ -15,7 +15,7 @@ interface IRewardsController {
         returns (address[] memory, uint256[] memory);
 }
 
-contract ClaimRewardsForkTest is Test {
+contract Test_P002 is Test {
     address private constant EMISSIONS_MANAGER = 0x749dF84Fd6DE7c0A67db3827e5118259ed3aBBa5;
     address private constant STAKING = 0x2666951A62d82860E8e1385581E2FB7669097647;
     address private constant ZERO_ADDRESS_PROVIDER = 0xC44827C51d00381ed4C52646aeAB45b455d200eB;
@@ -33,6 +33,7 @@ contract ClaimRewardsForkTest is Test {
     function setUp() public {
         vm.createSelectFork(vm.envString("LINEA_RPC_URL"), 7_766_645);
 
+        rewardsControllerProxy = IRewardsController(REWARDS_CONTROLLER_PROXY);
         payload = new P002_UpgradeIncentiveController();
 
         vm.startPrank(IMPERSONATED_USER);
