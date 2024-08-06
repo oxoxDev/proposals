@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity 0.8.19;
+pragma solidity 0.8.12;
 
 // ███████╗███████╗██████╗  ██████╗
 // ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗
@@ -17,24 +17,25 @@ pragma solidity 0.8.19;
 
 import {RewardsController} from "lib/periphery-contracts/contracts/rewards/RewardsController.sol";
 
-interface IRewardsController {
-    function upgradeTo(address newImplementation) external;
+interface IZeroAddressProvider {
+    function setAddressAsProxy(bytes32 id, address newImplementationAddress) external;
 }
 
 contract P002_UpgradeIncentiveController {
     address private constant EMISSIONS_MANAGER = 0x749dF84Fd6DE7c0A67db3827e5118259ed3aBBa5;
     address private constant STAKING = 0x2666951A62d82860E8e1385581E2FB7669097647;
-    address private constant REWARDS_CONTROLLER_PROXY = 0x28F6899fF643261Ca9766ddc251b359A2d00b945;
+    address private constant ZERO_ADDRESS_PROVIDER = 0xC44827C51d00381ed4C52646aeAB45b455d200eB;
+    bytes32 private constant INCENTIVE_CONTROLLER_ID = 0x703c2c8634bed68d98c029c18f310e7f7ec0e5d6342c590190b3cb8b3ba54532;
 
-    IRewardsController rewardsControllerProxy;
+    IZeroAddressProvider zeroAddressProvider;
     RewardsController rewardsControllerImpl;
 
     constructor() {
-        rewardsControllerProxy = IRewardsController(REWARDS_CONTROLLER_PROXY);
+        zeroAddressProvider = IZeroAddressProvider(ZERO_ADDRESS_PROVIDER);
         rewardsControllerImpl = new RewardsController(EMISSIONS_MANAGER, STAKING);
     }
 
     function execute() public {
-        rewardsControllerProxy.upgradeTo(address(rewardsControllerImpl));
+        zeroAddressProvider.setAddressAsProxy(INCENTIVE_CONTROLLER_ID, address(rewardsControllerImpl));
     }
 }
