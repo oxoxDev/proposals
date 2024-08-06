@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity 0.8.19;
+pragma solidity 0.8.12;
 
 // ███████╗███████╗██████╗  ██████╗
 // ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗
@@ -48,7 +48,7 @@ contract P003_UpdateCliffForAirdrops {
         vestedZeroNFT.updateCliffDuration(tokenIds, linearDuration, cliffDuration);
     }
 
-    function getAirdropTokenId(uint256 i) internal {
+    function getAirdropTokenId(uint256 i) public {
         (uint256 category,, uint256 cliffDuration) = vestedZeroNFT.tokenIdToLockDetails(i);
         if (category == IVestedZeroNFT.Category.AIRDROP) {
             if (cliffDuration > 86400 * 90) {
