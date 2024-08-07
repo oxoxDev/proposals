@@ -10,3 +10,6 @@
 [submodule "lib/governance"]
 	path = lib/governance
 	url = https://github.com/zerolend/governance
+[submodule "lib/pyth-oracles"]
+	path = lib/pyth-oracles
+	url = https://github.com/zerolend/pyth-oracles
