@@ -1,6 +1,18 @@
 [profile.default]
 src = "src"
 out = "out"
-libs = ["lib"]
+solc = "0.8.12"
+libs = [
+    "lib/core-contracts",
+    "lib/forge-std",
+    "lib/periphery-contracts",
+    "lib/governance"    
+]
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+    "periphery-contracts/=lib/periphery-contracts/",
+    "@zerolendxyz/core-v3/=lib/core-contracts/",
+    "@openzeppelin/=lib/core-contracts/contracts/dependencies/openzeppelin/contracts"
+]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
