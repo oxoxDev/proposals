@@ -13,3 +13,6 @@
 [submodule "lib/pyth-oracles"]
 	path = lib/pyth-oracles
 	url = https://github.com/zerolend/pyth-oracles
+[submodule "lib/pyth-network-contracts"]
+	path = lib/pyth-network-contracts
+	url = https://github.com/pyth-network/pyth-sdk-solidity

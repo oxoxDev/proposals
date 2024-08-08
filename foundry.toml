@@ -12,7 +12,10 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
     "periphery-contracts/=lib/periphery-contracts/",
     "@zerolendxyz/core-v3/=lib/core-contracts/",
-    "@openzeppelin/=lib/core-contracts/contracts/dependencies/openzeppelin/contracts"
+    "@openzeppelin/=lib/core-contracts/contracts/dependencies/openzeppelin/contracts",
+    "@pythnetwork/pyth-sdk-solidity/=lib/pyth-network-contracts/"
 ]
 
+[rpc_endpoints]
+linea-mainnet = "https://linea-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
